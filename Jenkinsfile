@@ -57,7 +57,7 @@ pipeline {
                         git config user.email "jenkins@fastapi-cqrs.local"
 
                         # 05-fastapi-app.yaml 내 도커 이미지 주소 치환 (juyeon13241/cqrs-fastapi-app:태그)
-                        sed -i -E "s|image: .*/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}|g" 05-fastapi-app.yaml
+                        sed -i -E "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}
 
                         # 변경 사항 커밋 및 푸시
                         git add 05-fastapi-app.yaml
