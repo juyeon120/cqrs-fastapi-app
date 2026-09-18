@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        // 본인의 Docker Hub 계정명과 Manifest Git URL로 수정
-        DOCKERHUB_USER   = 'juyeon120'
+        // [중요] 도커 허브와 깃허브 계정 분리
+        DOCKERHUB_USER   = 'juyeon13241'
+        GITHUB_USER      = 'juyeon120'
         IMAGE_NAME       = 'cqrs-fastapi-app'
-        MANIFEST_REPO    = 'https://github.com/juyeon120/cqrs-k8s-manifests.git'
         
         // Phase 3에서 등록한 Credentials ID
         DOCKER_CREDS_ID  = 'dockerhub-credentials'
@@ -22,7 +22,7 @@ pipeline {
         stage('2. Build Docker Image') {
             steps {
                 sh """
-                    echo "Building Docker Image version: ${BUILD_NUMBER}"
+                    echo "Building Docker Image version: ${BUILD_NUMBER} for user: ${DOCKERHUB_USER}"
                     docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER} .
                     docker tag ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER} ${DOCKERHUB_USER}/${IMAGE_NAME}:latest
                 """
@@ -48,16 +48,16 @@ pipeline {
                     sh """
                         rm -rf temp_manifest
                         
-                        # 토큰 인증 기반 clone
-                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/${GIT_USER}/cqrs-k8s-manifests.git temp_manifest
+                        # GitHub juyeon120 계정의 매니페스트 저장소 clone
+                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/${GITHUB_USER}/cqrs-k8s-manifests.git temp_manifest
                         cd temp_manifest
 
-                        # Git 작성자 정보 명시
+                        # Git 작성자 정보
                         git config user.name "jenkins-bot"
                         git config user.email "jenkins@fastapi-cqrs.local"
 
-                        # 05-fastapi-app.yaml 내 이미지 태그 치환
-                        sed -i -E "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}|g" 05-fastapi-app.yaml
+                        # 05-fastapi-app.yaml 내 도커 이미지 주소 치환 (juyeon13241/cqrs-fastapi-app:태그)
+                        sed -i -E "s|image: .*/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}|g" 05-fastapi-app.yaml
 
                         # 변경 사항 커밋 및 푸시
                         git add 05-fastapi-app.yaml
@@ -81,7 +81,7 @@ pipeline {
             sh "docker rmi ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER} ${DOCKERHUB_USER}/${IMAGE_NAME}:latest || true"
         }
         success {
-            echo "Pipeline succeeded! New image tag: ${BUILD_NUMBER} pushed to manifests repo."
+            echo "Pipeline succeeded! New image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}"
         }
         failure {
             echo "Pipeline failed."
