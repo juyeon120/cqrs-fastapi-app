@@ -59,7 +59,7 @@ docker run --rm --user "$(id -u):$(id -g)" \
             steps {
                 // Registry login lives in a per-build docker config that is always removed.
                 withEnv(["DOCKER_CONFIG=${env.WORKSPACE}/.docker"]) {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
                         sh '''#!/usr/bin/env bash
 set -Eeuo pipefail
 printf '%s' "$DOCKERHUB_PASS" | docker login --username "$DOCKERHUB_USER" --password-stdin
