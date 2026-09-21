@@ -10,3 +10,8 @@ env/
 venv/
 .venv/
 manifest/
+.git/
+*.log
+*.tmp
+tests/
+cqrs-k8s-manifests/
