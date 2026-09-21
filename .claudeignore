@@ -1,0 +1,12 @@
+.git/
+*.tar
+*.tar.gz
+*.log
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+env/
+venv/
+.venv/
+manifest/

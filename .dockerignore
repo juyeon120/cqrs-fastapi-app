@@ -1,0 +1,10 @@
+.git
+.dockerignore
+*.tar
+*.tar.gz
+*.log
+__pycache__
+.pytest_cache
+env
+venv
+.venv

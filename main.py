@@ -1,4 +1,3 @@
-# GitOps Test Commit
 import asyncio
 import json
 import os
@@ -180,7 +179,7 @@ async def web_index():
     </head>
     <body>
         <div class="card">
-            <h2>GitOps 주문 등록 파이프라인</h2>
+            <h2>CQRS 실시간 주문 시스템</h2>
             <p style="color: #64748b; font-size: 13px;">[Command Write] MariaDB ➔ [Event Stream] Kafka ➔ [Query Read] MongoDB</p>
             <form onsubmit="event.preventDefault(); submitOrder();">
                 <input id="customer" placeholder="고객명" required />
